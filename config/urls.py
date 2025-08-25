@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # مسیر اصلی API های Catalog
-    path('api/catalog/', include('apps.catalog.urls')),
+    path('', include('apps.catalog.urls')),
+
 ]
