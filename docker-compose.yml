@@ -1,18 +1,68 @@
-version: '3.9'
+version: '3.8'
 
 services:
   web:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/app                  # سینک کردن پروژه با کانتینر
-      - media_volume:/app/media # volume برای ذخیره تصاویر آپلود شده
+      - .:/app:cached  # Use cached for better performance on macOS
+      - media_volume:/app/media
+      - static_volume:/app/static
     ports:
-      - "8000:8000"
+      - "8080:8000"
     environment:
       - DEBUG=1
-      - SECRET_KEY=your_secret_key
-      - ALLOWED_HOSTS=*
+      - SECRET_KEY=${SECRET_KEY:-fallback_secret_key_for_dev}
+      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///db.sqlite3}
+    depends_on:
+      - db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health/', timeout=10)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-rah_nama}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
 volumes:
   media_volume:
+    driver: local
+  static_volume:
+    driver: local
+  postgres_data:
+    driver: local
+
+networks:
+  default:
+    name: myapp_network
