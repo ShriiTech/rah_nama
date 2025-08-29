@@ -1,16 +1,13 @@
 from django.db import models
+from django.utils.text import slugify
 from django.contrib.auth.models import User
 
+from utility.bases.base_model import BaseModel
 
-class Tag(models.Model):
-
-    name = models.CharField(max_length=50, unique=True)
-
-    def __str__(self):
-        return self.name
+from apps.catalog.models.tags import Tag
 
 
-class Project(models.Model):
+class Project(BaseModel):
 
     STATUS_CHOICES = [
     ('draft', 'Draft'),
@@ -20,7 +17,7 @@ class Project(models.Model):
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='projects')
     title = models.CharField(max_length=160)
-    slug = models.SlugField(max_length=180, unique=True)
+    slug = models.SlugField(max_length=180, unique=True, blank=True, null=True)
     summary = models.TextField()
     location = models.CharField(max_length=160, blank=True)
     area_sqm = models.PositiveIntegerField(null=True, blank=True)
@@ -39,3 +36,16 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            # تبدیل title به slug
+            base_slug = slugify(self.title)
+            slug = base_slug
+            num = 1
+            # اطمینان از یکتا بودن
+            while Project.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{num}"
+                num += 1
+            self.slug = slug
+        super().save(*args, **kwargs)

@@ -1,10 +1,9 @@
-version: '3.8'
-
 services:
   web:
     build: 
       context: .
       dockerfile: Dockerfile
+    # user: "999:999"  # UID:GID کاربری که مالک فایل‌هاست
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app:cached  # Use cached for better performance on macOS

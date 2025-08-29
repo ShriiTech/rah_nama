@@ -12,6 +12,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         build-essential \
         libpq-dev \
+        curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
@@ -30,12 +31,18 @@ RUN pip install --upgrade pip \
 # Copy project files
 COPY . .
 
-# Create media directory and set permissions
-RUN mkdir -p /app/media /app/static \
-    && chown -R appuser:appuser /app
+# Create migrations directory if it doesn't exist and set proper permissions
+# RUN mkdir -p /app/apps/catalog/migrations/ \
+#     && chown -R appuser:appuser /app \
+#     && chmod -R u+rw /app
+
+# Copy entrypoint script and make it executable
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh \
+    && chown appuser:appuser /entrypoint.sh
 
 # Switch to non-root user
-USER appuser
+# USER appuser
 
 # Expose port
 EXPOSE 8000
@@ -44,5 +51,6 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD python -c "import requests; requests.get('http://localhost:8000/health/', timeout=10)" || exit 1
 
-# Use exec form for better signal handling
+# Use entrypoint to run migrations and start server
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

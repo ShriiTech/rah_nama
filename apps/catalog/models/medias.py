@@ -1,8 +1,9 @@
 from django.db import models
 from apps.catalog.models.projects import Project
+from utility.bases.base_model import BaseModel
 
 
-class Media(models.Model):
+class Media(BaseModel):
     FILE_TYPES = [
     ('image', 'Image'),
     ('file', 'File'),
