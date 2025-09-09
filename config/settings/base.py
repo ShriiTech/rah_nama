@@ -62,5 +62,5 @@ CACHES = {
 CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
 CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
 
-AUTH_USER_MODEL = "apps.account.models.CustomUser"
+# AUTH_USER_MODEL = "account.CustomUser"
 

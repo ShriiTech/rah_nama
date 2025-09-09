@@ -20,7 +20,7 @@ from django.urls import path ,include
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # مسیر اصلی API های Catalog
+    # custom apps
     path('api/catalog/', include('apps.catalog.urls')),
-
+    path('api/account/', include('apps.catalog.urls')),
 ]
