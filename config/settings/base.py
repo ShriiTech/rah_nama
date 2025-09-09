@@ -28,7 +28,7 @@ load_dotenv(BASE_DIR / ".env")  # بارگذاری فایل .env
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+1ith45y(8*--g&$2!@dga2$wn$n(zgsie5m0ks83pz%0fj8uc'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
