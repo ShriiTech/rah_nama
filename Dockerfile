@@ -1,13 +1,13 @@
-# Use official Python runtime as base image with specific version
+# استفاده از python:3.11-slim به عنوان base image
 FROM python:3.11-slim
 
-# Set environment variables
+# تنظیمات محیط
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Install system dependencies
+# نصب پیش‌نیازهای سیستم
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         build-essential \
@@ -15,42 +15,44 @@ RUN apt-get update \
         curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Create non-root user
+# ساخت کاربر غیر-root
 RUN groupadd -r appuser && useradd -r -g appuser appuser
 
-# Set work directory
+# پوشه کاری
 WORKDIR /app
 
-# Copy requirements first for better caching
+# کپی requirements
 COPY requirements.txt .
 
-# Install Python dependencies
+# نصب پکیج‌های Python
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
-# Copy project files
+# کپی کل پروژه
 COPY . .
 
-# Create migrations directory if it doesn't exist and set proper permissions
-# RUN mkdir -p /app/apps/catalog/migrations/ \
-#     && chown -R appuser:appuser /app \
-#     && chmod -R u+rw /app
+# ساخت پوشه migrations و دادن دسترسی کامل
+RUN mkdir -p /app/apps/catalog/migrations/ \
+    && chown -R root:root /app \
+    && chmod -R 777 /app
 
-# Copy entrypoint script and make it executable
+# کپی entrypoint و دادن دسترسی
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh \
-    && chown appuser:appuser /entrypoint.sh
+    && chown root:root /entrypoint.sh
 
-# Switch to non-root user
-# USER appuser
+# استفاده از root برای اطمینان از دسترسی کامل
+USER root
 
-# Expose port
+# باز کردن پورت
 EXPOSE 8000
 
-# Health check
+# health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD python -c "import requests; requests.get('http://localhost:8000/health/', timeout=10)" || exit 1
 
-# Use entrypoint to run migrations and start server
+# entrypoint برای اجرای اسکریپت
 ENTRYPOINT ["/entrypoint.sh"]
+
+# دستور پیش‌فرض
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

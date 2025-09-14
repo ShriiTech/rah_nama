@@ -11,7 +11,7 @@ INSTALLED_APPS = [
     'apps.catalog.apps.CatalogConfig',
     
     # Dependency
-    'rest_framework'
+    'rest_framework',
     'rest_framework_simplejwt',
 ]      
 
