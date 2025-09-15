@@ -1,10 +1,14 @@
+version: '3.8'
+
 services:
   web:
     build: 
       context: .
       dockerfile: Dockerfile
-    # user: "999:999"  # UID:GID کاربری که مالک فایل‌هاست
-    command: python manage.py runserver 0.0.0.0:8000
+    # Use the entrypoint script instead of inline commands
+    # command: ["/entrypoint.sh"]  # This will use the entrypoint
+    # OR use the simple start script:
+    command: ["./start.sh"]
     volumes:
       - .:/app:cached  # Use cached for better performance on macOS
       - media_volume:/app/media
@@ -12,16 +16,40 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DEBUG=1
-      - SECRET_KEY=${SECRET_KEY:-fallback_secret_key_for_dev}
-      - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
-      - DATABASE_URL=${DATABASE_URL:-sqlite:///db.sqlite3}
+      # Django Settings
+      - DEBUG=${DEBUG:-1}
+      - SECRET_KEY=${SECRET_KEY:-your-super-secret-key-here}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0}
+      
+      # Database Configuration
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:44139890@db:5432/rah_nama}
+      - DB_HOST=${DB_HOST:-db}
+      - DB_PORT=${DB_PORT:-5432}
+      - POSTGRES_DB=${POSTGRES_DB:-rah_nama}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-44139890}
+      
+      # Redis Configuration
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      
+      # Email Configuration
+      - EMAIL_BACKEND=${EMAIL_BACKEND:-django.core.mail.backends.console.EmailBackend}
+      
+      # Setup Options
+      - DJANGO_COLLECT_STATIC=${DJANGO_COLLECT_STATIC:-false}
+      - CREATE_SUPERUSER=${CREATE_SUPERUSER:-false}
+      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME:-}
+      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL:-}
+      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD:-}
+      
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health/', timeout=10)"]
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/', timeout=10)"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -32,14 +60,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB:-rah_nama}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-44139890}
     ports:
       - "5432:5432"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-rah_nama}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -54,6 +82,8 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
+    volumes:
+      - redis_data:/data
 
 volumes:
   media_volume:
@@ -61,6 +91,8 @@ volumes:
   static_volume:
     driver: local
   postgres_data:
+    driver: local
+  redis_data:
     driver: local
 
 networks:
