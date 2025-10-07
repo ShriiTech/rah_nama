@@ -7,8 +7,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Custom apps
-    'apps.account.apps.AccountConfig',
-    'apps.catalog.apps.CatalogConfig',
+    'account.apps.AccountConfig',
+    'catalog.apps.CatalogConfig',
     
     # Dependency
     'rest_framework',

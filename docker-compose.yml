@@ -5,10 +5,6 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
-    # Use the entrypoint script instead of inline commands
-    # command: ["/entrypoint.sh"]  # This will use the entrypoint
-    # OR use the simple start script:
-    command: ["./start.sh"]
     volumes:
       - .:/app:cached  # Use cached for better performance on macOS
       - media_volume:/app/media
