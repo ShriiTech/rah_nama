@@ -26,33 +26,30 @@ RUN groupadd -r appuser && useradd -r -g appuser appuser
 # Set work directory
 WORKDIR /app
 
-# Create necessary directories
+# Create necessary directories AS ROOT
 RUN mkdir -p /app/logs /app/static /app/media \
-    && chown -R appuser:appuser /app
+    && mkdir -p /app/apps/catalog/migrations/ /app/account/migrations/ \
+    && touch /app/apps/catalog/migrations/__init__.py \
+    && touch /app/account/migrations/__init__.py
 
-# Copy and install Python dependencies
+# Copy and install Python dependencies AS ROOT
 COPY requirements.txt .
 RUN pip install --upgrade pip \
     && pip install -r requirements.txt
 
-# Copy project files
+# Copy project files AS ROOT
 COPY . .
 
-# Create migrations directory with proper permissions
-RUN mkdir -p /app/apps/catalog/migrations/ /app/account/migrations/ \
-    && touch /app/apps/catalog/migrations/__init__.py \
-    && touch /app/account/migrations/__init__.py
-
-# Copy entrypoint script and start script, make them executable
+# Copy entrypoint and start scripts and make them executable AS ROOT
 COPY entrypoint.sh /entrypoint.sh
 COPY start.sh /app/start.sh
 RUN chmod +x /entrypoint.sh /app/start.sh
 
-# Set ownership of the app directory to appuser
-RUN chown -R appuser:appuser /app /entrypoint.sh
+# Give ownership of /app to appuser (optional if you want to run as non-root later)
+RUN chown -R appuser:appuser /app /entrypoint.sh /app/start.sh
 
-# Switch to non-root user for security
-USER appuser
+# Switch to root to avoid permission issues
+USER root
 
 # Expose port
 EXPOSE 8000
