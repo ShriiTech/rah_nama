@@ -20,12 +20,10 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-# Create application user
-RUN groupadd -r appuser && useradd -r -g appuser appuser
-
-# Set work directory
+# Set working directory
 WORKDIR /app
 
+<<<<<<< HEAD
 # Create necessary directories AS ROOT
 RUN mkdir -p /app/logs /app/static /app/media \
     && mkdir -p /app/apps/catalog/migrations/ /app/account/migrations/ \
@@ -33,10 +31,13 @@ RUN mkdir -p /app/logs /app/static /app/media \
     && touch /app/account/migrations/__init__.py
 
 # Copy and install Python dependencies AS ROOT
+=======
+# Copy requirements and install
+>>>>>>> d7af78a03a18cab680e0e1f1f3132b80cb6bd6b4
 COPY requirements.txt .
-RUN pip install --upgrade pip \
-    && pip install -r requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
+<<<<<<< HEAD
 # Copy project files AS ROOT
 COPY . .
 
@@ -50,6 +51,14 @@ RUN chown -R appuser:appuser /app /entrypoint.sh /app/start.sh
 
 # Switch to root to avoid permission issues
 USER root
+=======
+# Copy the rest of the project
+COPY . .
+
+# Copy entrypoint and make it executable
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+>>>>>>> d7af78a03a18cab680e0e1f1f3132b80cb6bd6b4
 
 # Expose port
 EXPOSE 8000
@@ -58,7 +67,7 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:8000/health/ || exit 1
 
-# Set entrypoint
+# Use entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Default command

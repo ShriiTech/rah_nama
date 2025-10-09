@@ -19,6 +19,8 @@ from .databeses import DATABASES
 from .installed_apps import INSTALLED_APPS
 from .middleware import MIDDLEWARE
 from .templates import TEMPLATES
+from .log import LOGGING
+from .rest_framework import REST_FRAMEWORK
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -52,15 +54,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",  # /1 means DB index
+        "LOCATION": "redis://redis:6379/1",  # ✅ نام سرویس + پورت
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }
 
-CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
-CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
+OTP_TTL = 300  # 5 minutes
+
+OTP_MAX_REQUESTS = 5
+OTP_REQUEST_WINDOW = 3600  # seconds (1 hour)
+
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+
 
 AUTH_USER_MODEL = "account.CustomUser"
 
