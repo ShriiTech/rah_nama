@@ -36,4 +36,6 @@ REST_FRAMEWORK = {
     # 💬 تنظیمات دیگر (اختیاری)
     'COERCE_DECIMAL_TO_STRING': False,
     'DATETIME_FORMAT': "%Y-%m-%dT%H:%M:%S.%fZ",
+
+
 }
