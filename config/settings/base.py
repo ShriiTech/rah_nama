@@ -21,13 +21,11 @@ from .middleware import MIDDLEWARE
 from .templates import TEMPLATES
 from .log import LOGGING
 from .rest_framework import REST_FRAMEWORK
+from .simple_jwt import SIMPLE_JWT
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv(BASE_DIR / ".env")  # بارگذاری فایل .env
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')

@@ -5,3 +5,4 @@ from .middleware import MIDDLEWARE
 from .templates import TEMPLATES
 from .rest_framework import REST_FRAMEWORK
 from .log import LOGGING
+from .simple_jwt import SIMPLE_JWT

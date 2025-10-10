@@ -1,7 +1,11 @@
+from utility.bases.base_model import BaseModel
+
 from django.db import models
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
-from utility.bases.base_model import BaseModel
+from account.models.managers.customusermanager import CustomUserManager
+
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin, BaseModel):
@@ -15,8 +19,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin, BaseModel):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created Time")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated Time")
 
-    USERNAME_FIELD = "phone_number"
-    REQUIRED_FIELDS = []  
+    USERNAME_FIELD = 'phone_number'
+    REQUIRED_FIELDS = []  # فیلدهایی که هنگام createsuperuser باید پر شن (مثل first_name, last_name و غیره)
+
+    objects = CustomUserManager()  
 
     def __str__(self):
         return self.phone_number

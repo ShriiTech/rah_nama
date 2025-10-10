@@ -1,14 +1,14 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 
 from account.models.custom_user import CustomUser
 from account.serializers.custom_user import CustomUserSerializer
 
 
 class CustomUserListCreateAPIView(APIView):
-    permission_classes = [IsAdminUser]  # فقط ادمین‌ها می‌توانند دسترسی داشته باشند
+    permission_classes = [IsAuthenticated]  # فقط ادمین‌ها می‌توانند دسترسی داشته باشند
 
     def get(self, request):
         users = CustomUser.objects.all()
@@ -24,7 +24,7 @@ class CustomUserListCreateAPIView(APIView):
 
 
 class CustomUserDetaileAPIView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self, pk):
         try:
