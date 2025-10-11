@@ -5,10 +5,14 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
 from catalog.models import Project, Media
+from catalog.schema.medias import ProjectMediaUploadSchema
 from catalog.serializers.projects import MediaSerializer
 
+from drf_spectacular.utils import extend_schema_view
 
-
+@extend_schema_view(
+    post=ProjectMediaUploadSchema.post_schema
+)
 class ProjectMediaUploadAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 

@@ -37,5 +37,6 @@ REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING': False,
     'DATETIME_FORMAT': "%Y-%m-%dT%H:%M:%S.%fZ",
 
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 
 }

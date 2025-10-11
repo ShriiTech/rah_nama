@@ -5,9 +5,16 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 
 from catalog.models import Tag
+from catalog.schema.tags import TagDetailSchema, TagListCreateSchema
 from catalog.serializers.projects import TagSerializer
 
+from drf_spectacular.utils import extend_schema_view
 
+
+TagListCreateAPIView = extend_schema_view(
+    get=TagListCreateSchema.list_schema,
+    post=TagListCreateSchema.create_schema,
+)
 class TagListCreateAPIView(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
@@ -23,7 +30,11 @@ class TagListCreateAPIView(APIView):
             return Response(TagSerializer(tag).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+TagDetailAPIView = extend_schema_view(
+    get=TagDetailSchema.retrieve_schema,
+    put=TagDetailSchema.update_schema,
+    delete=TagDetailSchema.delete_schema,
+)
 class TagDetailAPIView(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 

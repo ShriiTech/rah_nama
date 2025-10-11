@@ -2,9 +2,15 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from drf_spectacular.utils import extend_schema_view
+
+from account.schema.phone_token import PhoneTokenObtainSchema
 from account.serializers.phone_token_obtain import PhoneTokenObtainSerializer
 
 
+@extend_schema_view(
+    post=PhoneTokenObtainSchema.post_schema
+)
 class PhoneTokenObtainView(APIView):
     permission_classes = []  # اجازه برای عموم (یا تنظیم دلخواه)
     authentication_classes = []
