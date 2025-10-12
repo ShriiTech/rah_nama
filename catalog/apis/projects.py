@@ -4,16 +4,23 @@ from rest_framework import status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from drf_spectacular.utils import extend_schema_view
+
 from django.shortcuts import get_object_or_404
 
 from catalog.models import Project
+from catalog.schema.projects import ProjectDetailSchema, ProjectListCreateSchema
 from catalog.serializers.projects import (
     ProjectListSerializer, ProjectDetailSerializer, ProjectWriteSerializer,
 )
 
+
 logger = logging.getLogger(__name__)
 
-
+ProjectListCreateAPIView = extend_schema_view(
+    get=ProjectListCreateSchema.list_schema,
+    post=ProjectListCreateSchema.create_schema,
+)
 class ProjectListCreateAPIView(APIView):
     """
     API View for listing all projects and creating new projects.
@@ -104,7 +111,12 @@ class ProjectListCreateAPIView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-
+ProjectDetailAPIView = extend_schema_view(
+    get=ProjectDetailSchema.retrieve_schema,
+    put=ProjectDetailSchema.update_schema,
+    patch=ProjectDetailSchema.update_schema,
+    delete=ProjectDetailSchema.delete_schema,
+)
 class ProjectDetailAPIView(APIView):
     """
     API View for retrieving, updating, and deleting individual projects.

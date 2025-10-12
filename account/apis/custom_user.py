@@ -3,10 +3,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
+from drf_spectacular.utils import extend_schema_view
+
 from account.models.custom_user import CustomUser
+from account.schema.custom_user import CustomUserDetailSchema, CustomUserListCreateSchema
 from account.serializers.custom_user import CustomUserSerializer
 
 
+@extend_schema_view(
+    get=CustomUserListCreateSchema.list_schema,
+    post=CustomUserListCreateSchema.create_schema,
+)
 class CustomUserListCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]  # فقط ادمین‌ها می‌توانند دسترسی داشته باشند
 
@@ -23,6 +30,12 @@ class CustomUserListCreateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+@extend_schema_view(
+    get=CustomUserDetailSchema.retrieve_schema,
+    patch=CustomUserDetailSchema.update_schema,
+    delete=CustomUserDetailSchema.delete_schema,
+)
 class CustomUserDetaileAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
