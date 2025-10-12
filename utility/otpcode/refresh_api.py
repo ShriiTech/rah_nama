@@ -11,6 +11,7 @@ from rest_framework.permissions import AllowAny
 
 logger = logging.getLogger(__name__)
 
+
 class RefreshTokenAPIView(APIView):
     """
     POST: { "refresh": "<refresh_token>" }
