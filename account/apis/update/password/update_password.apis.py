@@ -1,13 +1,18 @@
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 
-from account.serializers.update.password.update_password_serializers import ChangePasswordSerializer
 from drf_spectacular.utils import extend_schema_view
 
+from account.schema.update.password.update_password_sckemas import ChangePasswordSchema
+from account.serializers.update.password.update_password_serializers import ChangePasswordSerializer
 
+
+@extend_schema_view(
+    post=ChangePasswordSchema.post_schema
+)
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 

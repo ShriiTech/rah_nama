@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from drf_spectacular.utils import extend_schema_view
 
-from account.schema.phone_token import PhoneTokenObtainSchema
+from account.schema.phone_token_schemas import PhoneTokenObtainSchema
 from account.serializers.phone_token_obtain import PhoneTokenObtainSerializer
 
 

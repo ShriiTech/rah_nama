@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema_view
 
 from account.models.custom_user import CustomUser
-from account.schema.custom_user import CustomUserDetailSchema, CustomUserListCreateSchema
+from account.schema.custom_user_schemas import CustomUserDetailSchema, CustomUserListCreateSchema
 from account.serializers.models.custom_user_serializers import CustomUserSerializer
 
 

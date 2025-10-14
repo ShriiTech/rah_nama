@@ -9,8 +9,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.conf import settings
 
-from account.models.custom_user import CustomUser
-from account.serializers.auth.jwt.otp.request_serializers import VerifyOTPSerializer
+from account.models import CustomUser
+from account.serializers.auth.jwt.otp import VerifyOTPSerializer
 from utility.otpcode.otp import get_cached_otp, invalidate_otp
 
 

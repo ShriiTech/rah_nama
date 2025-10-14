@@ -1,1 +1,3 @@
-from .request_serializers import RequestOTPSerializer, VerifyOTPSerializer
+from .verify_serializers import VerifyOTPSerializer
+from .request_serializers import RequestOTPSerializer
+

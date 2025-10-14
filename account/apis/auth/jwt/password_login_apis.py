@@ -3,16 +3,18 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from account.serializers.auth.password.login_serializers import LoginSerializer
+from account.serializers.auth.jwt import PasswordLoginSerializer
 
 
-class LoginAPIView(APIView):
+
+
+class PasswordLoginAPIView(APIView):
     """
     Login with username and password using JWT
     """
 
     def post(self, request):
-        serializer = LoginSerializer(data=request.data)
+        serializer = PasswordLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         user = serializer.validated_data["user"]
