@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from account.serializers.custom_user import CustomUserSerializer
+from account.serializers.models.custom_user_serializers import CustomUserSerializer
 
 
 class MyCustomUserAPIView(APIView):

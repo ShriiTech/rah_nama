@@ -5,7 +5,7 @@ from drf_spectacular.utils import (
     OpenApiExample,
 )
 from rest_framework import status
-from account.serializers.custom_user import CustomUserSerializer
+from account.serializers.models.custom_user_serializers import CustomUserSerializer
 
 
 class CustomUserListCreateSchema:

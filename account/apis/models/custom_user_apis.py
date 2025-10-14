@@ -7,7 +7,7 @@ from drf_spectacular.utils import extend_schema_view
 
 from account.models.custom_user import CustomUser
 from account.schema.custom_user import CustomUserDetailSchema, CustomUserListCreateSchema
-from account.serializers.custom_user import CustomUserSerializer
+from account.serializers.models.custom_user_serializers import CustomUserSerializer
 
 
 @extend_schema_view(
@@ -28,7 +28,6 @@ class CustomUserListCreateAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 @extend_schema_view(

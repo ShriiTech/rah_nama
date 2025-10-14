@@ -1,4 +1,3 @@
-# yourapp/serializers.py
 from rest_framework import serializers
 import re
 
@@ -12,7 +11,3 @@ class RequestOTPSerializer(serializers.Serializer):
         if not PHONE_RE.match(v):
             raise serializers.ValidationError("فرمت شماره تلفن معتبر نیست. از فرمت بین‌المللی مانند +98912... استفاده کنید.")
         return v
-
-class VerifyOTPSerializer(serializers.Serializer):
-    phone_number = serializers.CharField()
-    otp = serializers.CharField(max_length=10)

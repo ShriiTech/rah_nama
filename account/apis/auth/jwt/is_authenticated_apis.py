@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework import status
 
 
-class TestAuthAPIView(APIView):
+class IsAuthenticatedAPIView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):

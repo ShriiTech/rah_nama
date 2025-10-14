@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
 
 from account.models.custom_user import CustomUser
-from utility.otpcode.otp_serializer import VerifyOTPSerializer
+from account.serializers.auth.jwt.otp.request_serializers import VerifyOTPSerializer
 from utility.otpcode.otp import get_cached_otp, invalidate_otp
 
 

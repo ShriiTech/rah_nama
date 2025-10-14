@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny
 
 from django.conf import settings
 
-from utility.otpcode.otp_serializer import RequestOTPSerializer
+from account.serializers.auth.jwt.otp.request_serializers import RequestOTPSerializer
 from utility.otpcode.otp import (
     generate_otp, cache_otp, get_cached_otp, invalidate_otp,
     increment_request_count, get_request_count
