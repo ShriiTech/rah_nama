@@ -14,9 +14,10 @@ from account.serializers.update.email.update_email_serializer import RequestEmai
 )
 class RequestEmailChangeView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = RequestEmailChangeSerializer
 
     def post(self, request):
-        serializer = RequestEmailChangeSerializer(data=request.data, context={"request": request})
+        serializer = self.serializer_class(data=request.data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"detail": "Verification code sent to new email."}, status=status.HTTP_200_OK)

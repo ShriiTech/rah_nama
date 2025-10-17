@@ -13,13 +13,15 @@ class VerifyEmailOTPSerializer(serializers.Serializer):
     def validate(self, attrs):
         user = self.context["request"].user
         new_email = attrs["new_email"]
-        otp_code = attrs["otp_code"]
+        user_otp_code = attrs["otp_code"]
 
-        cached_code = get_cached_otp(new_email)
-        if not cached_code:
+        redis_key = f"email_otp:{user.id}:{new_email}"
+
+        cached_otp_code = get_cached_otp(redis_key)
+        if not cached_otp_code:
             raise serializers.ValidationError(_("Verification code expired or not found."))
 
-        if cached_code != otp_code:
+        if cached_otp_code != user_otp_code:
             raise serializers.ValidationError(_("Invalid verification code."))
 
         attrs["new_email"] = new_email

@@ -34,7 +34,6 @@ urlpatterns = [
     # custom apps
     path('api/catalog/', include('catalog.urls')),
     path('api/account/', include('account.urls')),
-    path('api/', include('utility.otpcode.urls')),
 
     # swagger docs
     path('api/docs', SpectacularAPIView.as_view(), name='schema'),
