@@ -11,7 +11,7 @@ class Media(BaseModel):
     ]
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='media')
     file = models.FileField(upload_to='projects/media/')
-    caption = models.CharField(max_length=180, blank=True)
+    caption = models.CharField(max_length=180, blank=True, default="")
     type = models.CharField(max_length=10, choices=FILE_TYPES, default='image')
     order = models.PositiveIntegerField(default=0)
     uploaded_at = models.DateTimeField(auto_now_add=True)

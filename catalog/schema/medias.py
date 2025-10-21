@@ -1,6 +1,8 @@
 from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample, OpenApiParameter
+
 from rest_framework import status
-from catalog.serializers.projects import MediaSerializer
+
+from catalog.serializers.medias import MediaSerializer
 
 
 class ProjectMediaUploadSchema:
