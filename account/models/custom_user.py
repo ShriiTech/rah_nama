@@ -19,6 +19,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin, BaseModel):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created Time")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated Time")
 
+    is_email_verified = models.BooleanField(default=False)
+    is_phone_verified = models.BooleanField(default=False)
+
     USERNAME_FIELD = 'phone_number'
     REQUIRED_FIELDS = ['password']  # فیلدهایی که هنگام createsuperuser باید پر شن (مثل first_name, last_name و غیره)
 

@@ -6,9 +6,10 @@ from django.shortcuts import get_object_or_404
 
 from catalog.models import Project, Media
 from catalog.schema.medias import ProjectMediaUploadSchema
-from catalog.serializers.projects import MediaSerializer
+from catalog.serializers.medias import MediaSerializer
 
 from drf_spectacular.utils import extend_schema_view
+
 
 @extend_schema_view(
     post=ProjectMediaUploadSchema.post_schema

@@ -5,7 +5,6 @@ from rest_framework.permissions import IsAuthenticated
 
 from drf_spectacular.utils import extend_schema_view
 
-
 from account.schema.update.email.update_verify_email_schemas import VerifyEmailChangeSchema
 from account.serializers.update.email.verify_email_otp_serializers import VerifyEmailOTPSerializer
 
