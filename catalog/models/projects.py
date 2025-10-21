@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
 from django.conf import settings
-
 from utility.bases.base_model import BaseModel
 from catalog.models.tags import Tag
 
@@ -31,27 +30,42 @@ class Project(BaseModel):
 
     title = models.CharField(max_length=160)
     slug = models.SlugField(max_length=180, unique=True, blank=True, null=True)
-    summary = models.TextField()
-    location = models.CharField(max_length=160, blank=True)
+    summary = models.TextField(default="No summary provided.")  # 🟢 default added
+    location = models.CharField(max_length=160, blank=True, default="")  # 🟢 default added
     area_sqm = models.PositiveIntegerField(null=True, blank=True)
-    budget = models.DecimalField(max_digits=14, decimal_places=2, null=True, blank=True)
+    budget = models.DecimalField(
+        max_digits=14, decimal_places=2, null=True, blank=True, default=0
+    )
 
     municipal_file_number = models.CharField(
         max_length=50,
         unique=True,
         verbose_name="Municipal File Number",
         help_text=MUNICIPAL_FILE_NUMBER_HELP,
+        default=0
     )
 
-    owner_name = models.CharField(max_length=100, verbose_name="Owner Name")
+    owner_name = models.CharField(
+        max_length=100, verbose_name="Owner Name", default="Unknown Owner"
+    )  # 🟢 default added
     total_area = models.DecimalField(
-        max_digits=10, decimal_places=2, verbose_name="Total Project Area (m²)"
-    )
-    floors_count = models.PositiveIntegerField(verbose_name="Number of Floors")
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Total Project Area (m²)",
+        null=True,
+        blank=True,
+        default=0,
+    )  # 🟢 default added
+    floors_count = models.PositiveIntegerField(
+        verbose_name="Number of Floors", null=True, blank=True, default=0
+    )  # 🟢 default added
 
     start_date = models.DateField(verbose_name="Contract Start Date", null=True, blank=True)
     end_date = models.DateField(verbose_name="Contract End Date", null=True, blank=True)
-    address = models.TextField(verbose_name="Project Address")
+
+    address = models.TextField(
+        verbose_name="Project Address", null=True, blank=True, default="Unknown address"
+    )  # 🟢 default added
 
     status = models.CharField(
         max_length=16,

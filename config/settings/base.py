@@ -23,6 +23,7 @@ from .log import LOGGING
 from .rest_framework import REST_FRAMEWORK
 from .simple_jwt import SIMPLE_JWT
 from .smtp import DEFAULT_FROM_EMAIL, EMAIL_BACKEND, EMAIL_HOST, EMAIL_HOST_PASSWORD, EMAIL_HOST_USER, EMAIL_PORT, EMAIL_USE_TLS
+from .caches import CACHES
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -50,23 +51,13 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://localhost:6379/1",  # ✅ نام سرویس + پورت
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    }
-}
-
 OTP_TTL = 300  # 5 minutes
 
 OTP_MAX_REQUESTS = 5
 OTP_REQUEST_WINDOW = 3600  # seconds (1 hour)
 
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 
 
 AUTH_USER_MODEL = "account.CustomUser"

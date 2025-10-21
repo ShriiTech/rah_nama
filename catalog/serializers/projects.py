@@ -35,7 +35,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
             "created_at",
             "tags",
         ]
-        read_only_fields = fields
+        read_only_fields = ["slug"]
 
 
 # ------------------------------------------------------------------------

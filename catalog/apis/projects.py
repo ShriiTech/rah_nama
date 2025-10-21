@@ -35,6 +35,7 @@ class ProjectListCreateAPIView(APIView):
     """
 
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = ProjectListSerializer
 
     def get(self, request):
         logger.info("Fetching projects for listing")
@@ -63,7 +64,7 @@ class ProjectListCreateAPIView(APIView):
         else:
             queryset = queryset.order_by("-created_at")
 
-        serializer = ProjectListSerializer(queryset, many=True, context={"request": request})
+        serializer = self.serializer_class(queryset, many=True, context={"request": request})
         logger.debug(f"Returning {len(serializer.data)} projects")
         return Response(serializer.data, status=status.HTTP_200_OK)
 
