@@ -4,7 +4,9 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from utility.otpcode.otp import get_cached_otp, invalidate_otp
 
+
 customuser = get_user_model()
+
 
 class VerifyEmailOTPSerializer(serializers.Serializer):
     new_email = serializers.EmailField()

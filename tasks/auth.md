@@ -7,3 +7,9 @@
 ساخت api logout refresh token رو بلک لیست کنه
 
 ساخت api که با شماره تلقن , password بگیزه و بهت access token , refresh token بده
+
+
+ai for front:
+v0
+bolt
+re

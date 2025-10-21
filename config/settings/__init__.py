@@ -6,3 +6,4 @@ from .templates import TEMPLATES
 from .rest_framework import REST_FRAMEWORK
 from .log import LOGGING
 from .simple_jwt import SIMPLE_JWT
+from .smtp import DEFAULT_FROM_EMAIL, EMAIL_BACKEND, EMAIL_HOST, EMAIL_HOST_PASSWORD, EMAIL_HOST_USER, EMAIL_PORT, EMAIL_USE_TLS

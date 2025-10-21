@@ -16,5 +16,5 @@ EMAIL_HOST="smtp.gmail.com"
 EMAIL_PORT=587
 EMAIL_USE_TLS=True
 EMAIL_HOST_USER="rah.nama.drf@gmail.com"
-EMAIL_HOST_PASSWORD="ddgcffjnfyhbkrvo"
-DEFAULT_FROM_EMAIL="RAHNAMA rah.nama.drf@gmail.com"
+EMAIL_HOST_PASSWORD="jercrhmfyplnqqij"
+DEFAULT_FROM_EMAIL="rah.nama.drf@gmail.com"

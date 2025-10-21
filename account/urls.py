@@ -28,9 +28,8 @@ urlpatterns = [
     ])),
     path('login-by-phone', PhoneTokenObtainView.as_view(), name='token_by_phone'),
 
-    path('me', MyCustomUserAPIView.as_view(), name='me'),
+    path('personal-info', MyCustomUserAPIView.as_view(), name='me'),
 
     path("update-email/request", RequestEmailChangeView.as_view(), name="request-email-change"),
     path("update-email/verify", VerifyEmailChangeView.as_view(), name="verify-email-change"),
-
 ]

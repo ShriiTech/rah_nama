@@ -70,7 +70,7 @@ class RequestEmailChangeSerializer(serializers.Serializer):
             )
             logger.info(f"Verification email sent to {new_email} for user {user.id}")
         except Exception as e:
-            logger.error(f"Failed to send verification email to {new_email} for user {user.id}: {e}")
+            logger.exception(f"Failed to send verification email to {new_email} for user {user.id}: ")
             raise serializers.ValidationError(_("Failed to send verification email. Please try again later."))
 
         return {"email": new_email, "otp_sent": True}
