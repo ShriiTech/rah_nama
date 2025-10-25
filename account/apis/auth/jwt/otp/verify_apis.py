@@ -1,30 +1,34 @@
 import logging
-
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from django.conf import settings
+from drf_spectacular.utils import extend_schema_view
 
 from account.models import CustomUser
+from account.schema.auth.jwt.otp import VerifyOTPSchema
 from account.serializers.auth.jwt.otp import VerifyOTPSerializer
-from utility.otpcode.otp import get_cached_otp, invalidate_otp
-
+from utility.otp_code import OTPService
 
 logger = logging.getLogger(__name__)
 
 
+@extend_schema_view(
+    post=VerifyOTPSchema.post(),
+)
 class VerifyOTPAPIView(APIView):
     """
-    POST: { "phone_number": "+98912XXXXXXX", "otp": "123456" }
+    API endpoint for verifying OTP codes.
+    Validates OTPs via Redis using OTPService, creates users if needed,
+    and returns JWT access/refresh tokens.
     """
     permission_classes = [AllowAny]
+    serializer_class = VerifyOTPSerializer
 
     def post(self, request):
-        serializer = VerifyOTPSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
             logger.warning(f"Invalid OTP verification data: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -34,34 +38,41 @@ class VerifyOTPAPIView(APIView):
 
         logger.info(f"OTP verification attempt for {phone}")
 
-        cached = get_cached_otp(phone)
-        if cached is None:
-            logger.warning(f"OTP expired or missing for {phone}")
-            return Response({"detail": "کد منقضی شده یا وجود ندارد."}, status=status.HTTP_400_BAD_REQUEST)
+        otp_service = OTPService()
 
-        if otp != cached:
-            logger.warning(f"Incorrect OTP entered for {phone}")
-            return Response({"detail": "کد اشتباه است."}, status=status.HTTP_400_BAD_REQUEST)
+        # ✅ Verify OTP using Redis-backed service
+        try:
+            if not otp_service.verify_otp(phone, otp):
+                logger.warning(f"Incorrect or expired OTP for {phone}")
+                return Response(
+                    {"detail": "کد وارد شده اشتباه یا منقضی شده است."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
-        # ✅ در صورت معتبر بودن OTP:
-        invalidate_otp(phone)
+        except Exception as e:
+            logger.error(f"Error verifying OTP for {phone}: {e}", exc_info=True)
+            return Response(
+                {"detail": "خطا در تأیید کد. لطفاً بعداً تلاش کنید."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
-        # ✅ اگر کاربر قبلاً وجود ندارد، بسازش
+        # ✅ OTP verified successfully — create or activate user
         user, created = CustomUser.objects.get_or_create(
             phone_number=phone,
-            defaults={
-                "is_active": True,
-            }
+            defaults={"is_active": True},
         )
 
-        # ✅ تولید توکن JWT
+        # ✅ Generate JWT tokens
         refresh = RefreshToken.for_user(user)
         access = str(refresh.access_token)
 
         logger.info(f"OTP verified successfully for {phone}")
 
-        return Response({
-            "access": access,
-            "refresh": str(refresh),
-
-        }, status=status.HTTP_200_OK)
+        return Response(
+            {
+                "access": access,
+                "refresh": str(refresh),
+                "detail": "ورود با موفقیت انجام شد.",
+            },
+            status=status.HTTP_200_OK,
+        )

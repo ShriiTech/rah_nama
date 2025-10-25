@@ -4,7 +4,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from account.models.custom_user import CustomUser
 
 
-class PhoneTokenObtainSerializer(serializers.Serializer):
+class PasswordLoginSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
     password = serializers.CharField(write_only=True)
 

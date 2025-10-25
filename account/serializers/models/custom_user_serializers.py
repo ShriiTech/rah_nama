@@ -13,13 +13,11 @@ class CustomUserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "password": {"write_only": True}
         }
-    
 
-    def validator_phone_number(value):
+    def validate_phone_number(self, value):
         if not value.startswith("+98"):
             raise serializers.ValidationError("Phone number must start with +98.")
         return value
-
 
     def create(self, validated_data):
         return CustomUser.objects.create_user(**validated_data)

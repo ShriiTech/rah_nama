@@ -14,16 +14,16 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-from .authentications import AUTH_PASSWORD_VALIDATORS
-from .databeses import DATABASES
+from .auth_password_validators import AUTH_PASSWORD_VALIDATORS
+from .databases.postgres import DATABASES
 from .installed_apps import INSTALLED_APPS
 from .middleware import MIDDLEWARE
 from .templates import TEMPLATES
-from .log import LOGGING
-from .rest_framework import REST_FRAMEWORK
-from .simple_jwt import SIMPLE_JWT
-from .smtp import DEFAULT_FROM_EMAIL, EMAIL_BACKEND, EMAIL_HOST, EMAIL_HOST_PASSWORD, EMAIL_HOST_USER, EMAIL_PORT, EMAIL_USE_TLS
-from .caches import CACHES
+from .utilities.log import LOGGING
+from .drf.rest_framework import REST_FRAMEWORK
+from .drf.simple_jwt import SIMPLE_JWT
+from .utilities.smtp import DEFAULT_FROM_EMAIL, EMAIL_BACKEND, EMAIL_HOST, EMAIL_HOST_PASSWORD, EMAIL_HOST_USER, EMAIL_PORT, EMAIL_USE_TLS
+from .databases.caches import CACHES
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -51,7 +51,7 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-OTP_TTL = 300  # 5 minutes
+OTP_TTL = 120  # 2 minutes
 
 OTP_MAX_REQUESTS = 5
 OTP_REQUEST_WINDOW = 3600  # seconds (1 hour)

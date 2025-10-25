@@ -5,11 +5,12 @@ from rest_framework.permissions import IsAuthenticated
 from account.serializers.models.custom_user_serializers import CustomUserSerializer
 
 
-class MyCustomUserAPIView(APIView):
+class PersonalInfoAPIView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = CustomUserSerializer
 
     def get(self, request):
         my_custom_user = request.user
-        serializer = CustomUserSerializer(my_custom_user)
+        serializer = self.serializer_class(my_custom_user)
         return Response(serializer.data)
     

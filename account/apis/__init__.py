@@ -1,0 +1,2 @@
+from .password_login_apis import PasswordLoginAPIView
+from .personal_info_apis import PersonalInfoAPIView

@@ -1,0 +1,1 @@
+from .verify_email_update_serializers import VerifyEmailUpdateSerializer

@@ -1,18 +1,18 @@
 from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
 from rest_framework import status
-from account.serializers.phone_token_obtain import PhoneTokenObtainSerializer
+from account.serializers import PasswordLoginSerializer
 
 
-class PhoneTokenObtainSchema:
+class PasswordLoginSchemas:
     """Schema برای API دریافت توکن با شماره موبایل"""
 
-    post_schema = extend_schema(
+    post = extend_schema(
         summary="دریافت توکن با شماره موبایل",
         description="با ارسال شماره موبایل، توکن احراز هویت برای کاربر ایجاد و برگردانده می‌شود.",
-        request=PhoneTokenObtainSerializer,
+        request=PasswordLoginSerializer,
         responses={
             status.HTTP_200_OK: OpenApiResponse(
-                response=PhoneTokenObtainSerializer,
+                response=PasswordLoginSerializer,
                 description="توکن با موفقیت ایجاد شد.",
                 examples=[
                     OpenApiExample(

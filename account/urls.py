@@ -1,35 +1,32 @@
 from django.urls import path, include
 
-from account.apis.auth.jwt.is_authenticated_apis import IsAuthenticatedAPIView
-from account.apis.auth.jwt.logout_apis import LogoutView
-from account.apis.auth.jwt.otp.request_apis import RequestOTPAPIView
-from account.apis.auth.jwt.otp.verify_apis import VerifyOTPAPIView
-from account.apis.phone_token import PhoneTokenObtainView
-from account.apis.auth.jwt.otp.verify_apis import VerifyOTPAPIView
-from account.apis.models.custom_user_apis import CustomUserListCreateAPIView, CustomUserDetaileAPIView
-from account.apis.my.my_custom_user import MyCustomUserAPIView
-from account.apis.phone_token import PhoneTokenObtainView
-from account.apis.auth.jwt.refresh_api import RefreshTokenAPIView
-from account.apis.update.email.update_email_apis import RequestEmailChangeView
-from account.apis.update.email.verify_email_apis import VerifyEmailChangeView
+from account.apis import PersonalInfoAPIView, PasswordLoginAPIView
+from account.apis.models import CustomUserListAPIView, CustomUserDetailAPIView
+from account.apis.auth.jwt import IsAuthenticatedAPIView, LogoutView, RefreshTokenAPIView
+from account.apis.auth.jwt.otp import RequestOTPAPIView, VerifyOTPAPIView
+from account.apis.update.email import RequestEmailChangeView, VerifyEmailChangeView
 
 
 urlpatterns = [
-    path('users', CustomUserListCreateAPIView.as_view(), name='user_list_create'),
-    path('users/<int:pk>', CustomUserDetaileAPIView.as_view(), name='user_detail'),
+    path('users', CustomUserListAPIView.as_view(), name='user_list'),
+    path('users/<int:pk>', CustomUserDetailAPIView.as_view(), name='user_detail'),
     path('auth/', include([
-        path('request-otp', RequestOTPAPIView.as_view(), name="request_otp"),
-        path('', VerifyOTPAPIView.as_view(), name='token_verify'),
-
-        path("verify-otp", VerifyOTPAPIView.as_view(), name="verify_otp"),
-        path("test-auth", IsAuthenticatedAPIView.as_view(), name="test_auth"),  
-        path("refresh-token", RefreshTokenAPIView.as_view(), name="refresh_token"),
-        path("logout", LogoutView.as_view(), name="logout"),
+        path('jwt/', include([
+            path('otp/', include([
+                path('request', RequestOTPAPIView.as_view(), name="request_otp"),
+                path("verify", VerifyOTPAPIView.as_view(), name="verify_otp"),
+            ])),
+            path('password-login', PasswordLoginAPIView.as_view(), name='token_by_phone'),
+            path("refresh-token", RefreshTokenAPIView.as_view(), name="refresh_token"),
+            path("logout", LogoutView.as_view(), name="logout"),
+        ])),
+        path("auth-check", IsAuthenticatedAPIView.as_view(), name="test_auth"),  
     ])),
-    path('login-by-phone', PhoneTokenObtainView.as_view(), name='token_by_phone'),
-
-    path('personal-info', MyCustomUserAPIView.as_view(), name='me'),
-
-    path("update-email/request", RequestEmailChangeView.as_view(), name="request-email-change"),
-    path("update-email/verify", VerifyEmailChangeView.as_view(), name="verify-email-change"),
+    path('personal-info', PersonalInfoAPIView.as_view(), name='me'),
+    path('update/', include([
+        path('email/', include([
+            path("request", RequestEmailChangeView.as_view(), name="update-email-request"),
+            path("verify", VerifyEmailChangeView.as_view(), name="update-email-verify"),
+        ])),
+    ])),
 ]

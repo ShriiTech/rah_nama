@@ -6,24 +6,25 @@ from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema_view
 
 from account.models.custom_user import CustomUser
-from account.schema.custom_user_schemas import CustomUserDetailSchema, CustomUserListCreateSchema
+from account.schema.models.custom_user_schemas import CustomUserDetailSchema, CustomUserListSchema
 from account.serializers.models.custom_user_serializers import CustomUserSerializer
 
 
 @extend_schema_view(
-    get=CustomUserListCreateSchema.list_schema,
-    post=CustomUserListCreateSchema.create_schema,
+    get=CustomUserListSchema.get(),
+    post=CustomUserListSchema.post(),
 )
-class CustomUserListCreateAPIView(APIView):
-    permission_classes = [IsAuthenticated]  # فقط ادمین‌ها می‌توانند دسترسی داشته باشند
+class CustomUserListAPIView(APIView):
+    permission_classes = [IsAuthenticated] 
+    serializer_class = CustomUserSerializer
 
     def get(self, request):
         users = CustomUser.objects.all()
-        serializer = CustomUserSerializer(users, many=True)
+        serializer = self.serializer_class(users, many=True)
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = CustomUserSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -31,12 +32,13 @@ class CustomUserListCreateAPIView(APIView):
 
 
 @extend_schema_view(
-    get=CustomUserDetailSchema.retrieve_schema,
-    patch=CustomUserDetailSchema.update_schema,
-    delete=CustomUserDetailSchema.delete_schema,
+    get=CustomUserDetailSchema.get(),
+    patch=CustomUserDetailSchema.patch(),
+    delete=CustomUserDetailSchema.delete(),
 )
-class CustomUserDetaileAPIView(APIView):
+class CustomUserDetailAPIView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = CustomUserSerializer
 
     def get_object(self, pk):
         try:
@@ -48,14 +50,14 @@ class CustomUserDetaileAPIView(APIView):
         user = self.get_object(pk)
         if not user:
             return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = CustomUserSerializer(user)
+        serializer = self.serializer_class(user)
         return Response(serializer.data)
 
     def patch(self, request, pk):
         user = self.get_object(pk)
         if not user:
             return Response({"detail": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-        serializer = CustomUserSerializer(user, data=request.data, partial=True)
+        serializer = self.serializer_class(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
